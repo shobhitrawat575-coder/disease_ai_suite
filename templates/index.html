@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Clinical Diagnostic Suite</title>
+  
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-white text-indigo-600 p-2 rounded-xl text-xl shadow-inner">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold leading-tight" id="ui-app-title">AI Clinical Diagnostic Suite</h1>
+          <p class="text-xs text-indigo-200" id="ui-app-subtitle">Simple, Fast & Accessible Healthcare for Everyone</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs md:text-sm font-semibold px-3 py-1.5 rounded-lg border border-indigo-500 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-globe"></i>
+          <span id="lang-btn-text">हिन्दी में बदलें</span>
+        </button>
+
+        <div id="patient-badge" class="hidden items-center bg-indigo-500/40 text-white px-3 py-1 rounded-lg text-xs">
+          <i class="fa-solid fa-user-check mr-1.5 text-emerald-300"></i>
+          <span id="badge-patient-name" class="font-bold"></span>
+          <button onclick="logoutPatient()" class="ml-2 underline text-indigo-200 hover:text-white" title="Logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View -->
+  <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+
+    <!-- 1. Patient Registration -->
+    <section id="section-login" class="max-w-xl mx-auto bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-50 text-indigo-600 text-2xl mb-3">
+          <i class="fa-solid fa-id-card-clip"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900" id="t-login-heading">Patient Registration</h2>
+        <p class="text-sm text-slate-500 mt-1" id="t-login-sub">Please fill in your basic information before beginning the checkup.</p>
+      </div>
+
+      <form id="patient-form" onsubmit="handleRegistration(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1" id="t-lbl-name">Full Name *</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-user"></i></span>
+            <input type="text" id="input-name" required placeholder="e.g. Ramesh Kumar" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 font-medium" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1" id="t-lbl-age">Age (Years) *</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-cake-candles"></i></span>
+              <input type="number" id="input-age" required min="1" max="115" value="45" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 font-medium" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1" id="t-lbl-gender">Gender *</label>
+            <select id="input-gender" class="w-full px-3.5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 font-medium bg-white">
+              <option value="Male">Male / पुरुष</option>
+              <option value="Female">Female / महिला</option>
+              <option value="Other">Other / अन्य</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1" id="t-lbl-contact">Mobile Number / Email *</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-phone"></i></span>
+            <input type="text" id="input-contact" required placeholder="e.g. 9876543210 or name@mail.com" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 font-medium" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-200 transition flex items-center justify-center gap-2 mt-4">
+          <span id="t-btn-register">Start Health Checkup</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </section>
+
+    <!-- 2. Dashboard View -->
+    <section id="section-dashboard" class="hidden space-y-6">
+      
+      <!-- Banner -->
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl md:text-2xl font-black flex items-center gap-2">
+            <span id="t-greeting">Welcome,</span>
+            <span id="banner-name" class="underline decoration-indigo-300"></span>
+          </h2>
+          <p class="text-sm text-indigo-100 mt-1" id="t-choose-instruction">Tap on the condition or test you would like to inspect today:</p>
+        </div>
+        <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-2xl w-fit">
+          <i class="fa-solid fa-location-dot text-amber-300"></i>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-indigo-200 block" id="t-city-tag">City</span>
+            <input type="text" id="city-input" value="Dehradun" class="bg-transparent font-bold text-sm text-white focus:outline-none w-28 placeholder-white/50" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modules Grid -->
+      <div>
+        <h3 class="text-base font-bold text-slate-700 mb-3 flex items-center gap-2" id="t-modules-title">
+          <i class="fa-solid fa-stethoscope text-indigo-600"></i> Select Condition / अंग चुनें
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4" id="modules-grid"></div>
+      </div>
+
+      <!-- Test Container -->
+      <div id="test-container" class="hidden bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 space-y-6">
+        <div class="flex items-center justify-between border-b pb-4">
+          <div class="flex items-center gap-3">
+            <div id="active-mod-icon" class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl font-bold"></div>
+            <div>
+              <h3 id="active-mod-title" class="text-xl font-bold text-slate-900"></h3>
+              <p id="active-mod-desc" class="text-xs text-slate-500"></p>
+            </div>
+          </div>
+          <button onclick="closeActiveModule()" class="text-slate-400 hover:text-slate-600 text-lg p-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Question Panel -->
+        <div id="panel-questions" class="space-y-4">
+          <p class="text-xs font-bold uppercase text-indigo-600" id="t-symp-sub">Select the response that best describes your feelings:</p>
+          <div id="questions-list" class="space-y-4"></div>
+          <button onclick="evaluateSymptomModule()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            <span id="t-btn-run-check">Analyze Health Risk Now</span>
+          </button>
+        </div>
+
+        <!-- Multimodal Vision Panel -->
+        <div id="panel-multimodal" class="hidden space-y-4">
+          <p class="text-xs font-bold uppercase text-indigo-600" id="t-img-sub">Provide a clear photo of the affected area or X-ray:</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer bg-slate-50 hover:bg-indigo-50/50 transition">
+              <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-500 mb-2"></i>
+              <span class="text-sm font-bold text-slate-700" id="t-btn-upload">Select Image File</span>
+              <span class="text-xs text-slate-400 mt-1">JPG, JPEG or PNG</span>
+              <input type="file" id="visual-file-input" accept="image/*" class="hidden" onchange="handleImageSelection(event)" />
+            </label>
+
+            <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-slate-50">
+              <i class="fa-solid fa-camera text-3xl text-indigo-500 mb-2"></i>
+              <button onclick="startCamera()" id="btn-open-cam" class="text-sm font-bold text-indigo-600 hover:underline">Take Photo with Camera</button>
+              <span class="text-xs text-slate-400 mt-1" id="t-cam-sub">Live mobile/webcam snapshot</span>
+            </div>
+          </div>
+
+          <div id="cam-box" class="hidden flex-col items-center gap-3 bg-slate-900 p-4 rounded-2xl">
+            <video id="webcam-feed" autoplay playsinline class="max-h-64 rounded-xl w-full object-cover"></video>
+            <div class="flex gap-2">
+              <button onclick="captureCameraSnapshot()" class="bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-camera"></i> Capture
+              </button>
+              <button onclick="stopCamera()" class="bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold">Cancel</button>
+            </div>
+          </div>
+
+          <canvas id="cv-canvas" class="hidden"></canvas>
+
+          <div id="preview-box" class="hidden flex flex-col items-center gap-2 border rounded-2xl p-4 bg-slate-50">
+            <img id="image-preview" src="#" alt="Preview" class="max-h-60 rounded-xl object-contain border shadow-sm" />
+            <button onclick="evaluateVisualModule()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 mt-2">
+              <i class="fa-solid fa-brain"></i>
+              <span id="t-btn-scan-img">Scan & Analyze Visual Biomarkers</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. Assessment Results -->
+      <div id="results-container" class="hidden bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 space-y-6">
+        <div class="flex items-center justify-between border-b pb-3">
+          <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-check text-indigo-600"></i>
+            <span id="t-diag-report-title">Health Risk Assessment Result</span>
+          </h3>
+          <span id="risk-pill" class="px-4 py-1.5 rounded-full text-xs font-black uppercase"></span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center gap-6 bg-slate-50 p-4 md:p-6 rounded-2xl">
+          <div class="text-center sm:text-left">
+            <span class="text-xs font-bold uppercase text-slate-400 block" id="t-prob-label">Estimated Risk Probability</span>
+            <div class="text-4xl md:text-5xl font-black text-slate-900 mt-1" id="risk-score-display">0%</div>
+          </div>
+          <div class="flex-grow w-full">
+            <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden">
+              <div id="risk-progress-bar" class="h-full bg-indigo-600 transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p id="risk-badge-comment" class="text-xs font-bold text-slate-600 mt-2"></p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold uppercase text-slate-500 mb-2" id="t-expl-title">Clinical Findings & Observations:</h4>
+          <div id="report-explanation" class="text-sm md:text-base text-slate-700 bg-indigo-50/60 p-4 rounded-2xl border border-indigo-100 leading-relaxed font-medium"></div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold uppercase text-emerald-700 mb-2 flex items-center gap-2" id="t-rem-title">
+            <i class="fa-solid fa-seedling"></i> Safe Everyday Care & Home Remedies:
+          </h4>
+          <div id="report-remedies" class="text-sm text-slate-700 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 space-y-1 font-medium whitespace-pre-line"></div>
+        </div>
+
+        <button onclick="triggerMedicalReportDownload()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-file-pdf text-red-400"></i>
+          <span id="t-btn-dl-report">Download Diagnostic Report (PDF)</span>
+        </button>
+
+        <!-- Doctor Slots and Booking -->
+        <div class="border-t pt-6 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h4 class="text-lg font-bold text-slate-900 flex items-center gap-2" id="t-doc-heading">
+                <i class="fa-solid fa-hospital text-indigo-600"></i> Top Specialists & Consultation Slots
+              </h4>
+              <p class="text-xs text-slate-500" id="t-doc-sub">Verified hospital doctors available near your location.</p>
+            </div>
+            <span class="text-xs bg-slate-100 px-3 py-1 rounded-full text-slate-600 font-bold" id="badge-city-display">City: Dehradun</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="doctors-list"></div>
+
+          <div id="booking-confirmation-box" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center gap-3 text-emerald-800">
+              <i class="fa-solid fa-circle-check text-2xl text-emerald-600"></i>
+              <div>
+                <h5 class="text-base font-bold" id="t-booking-success-title">Appointment Confirmed!</h5>
+                <p class="text-xs text-emerald-700" id="booking-details-text"></p>
+              </div>
+            </div>
+            <button onclick="triggerAppointmentSlipDownload()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-receipt"></i>
+              <span id="t-btn-dl-slip">Download Appointment Slip & Bill (PDF)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- 24/7 AI Floating Assistant Button -->
+  <div class="fixed bottom-5 right-5 z-50">
+    <button onclick="toggleAIChat()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition hover:scale-110 active:scale-95 border-2 border-white">
+      <i class="fa-solid fa-comment-medical"></i>
+    </button>
+  </div>
+
+  <!-- AI Drawer Modal -->
+  <div id="ai-chat-drawer" class="hidden fixed bottom-24 right-5 w-[92vw] max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col h-[500px]">
+    <!-- Header -->
+    <div class="bg-indigo-600 text-white px-4 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-indigo-500/50 flex items-center justify-center text-indigo-100">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <h5 class="text-xs md:text-sm font-bold" id="t-ai-title">24/7 AI Health Assistant</h5>
+          <span class="text-[10px] text-emerald-300 font-semibold block" id="t-ai-status">● Online Clinical Support</span>
+        </div>
+      </div>
+      <button onclick="toggleAIChat()" class="text-white/80 hover:text-white text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-3 custom-scrollbar text-xs bg-slate-50/50">
+      <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-100 text-slate-700 leading-relaxed shadow-sm font-medium" id="t-ai-welcome">
+        Hello! I am your 24/7 Health Assistant. You can browse hospitals across all 9 departments, book slots, or analyze your report in English or Hindi!
+      </div>
+    </div>
+
+    <!-- Action Suggestion Chips -->
+    <div class="px-3 py-2 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
+      <button onclick="sendQuickMessage('Find hospital departments')" class="whitespace-nowrap px-2.5 py-1 bg-indigo-50 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-100 transition">
+        🏥 All Hospital Departments
+      </button>
+      <button onclick="sendQuickMessage('Explain risk for different diseases')" class="whitespace-nowrap px-2.5 py-1 bg-purple-50 text-purple-700 font-semibold rounded-lg hover:bg-purple-100 transition">
+        📊 Disease Risk Options
+      </button>
+      <button onclick="sendQuickMessage('Care recommendations for diabetes')" class="whitespace-nowrap px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-lg hover:bg-emerald-100 transition">
+        🩸 Diabetes Care
+      </button>
+      <button onclick="sendQuickMessage('Care recommendations for heart and bp')" class="whitespace-nowrap px-2.5 py-1 bg-amber-50 text-amber-700 font-semibold rounded-lg hover:bg-amber-100 transition">
+        ❤️ Heart & BP Care
+      </button>
+    </div>
+
+    <!-- Input Form -->
+    <form onsubmit="handleSendAIMessage(event)" class="border-t p-2.5 bg-white flex items-center gap-2">
+      <input type="text" id="ai-chat-input" autocomplete="off" placeholder="Ask a health question or book a doctor..." class="flex-grow px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" />
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white w-9 h-9 rounded-xl flex items-center justify-center transition shadow-sm active:scale-95">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Script Modules -->
+  <script src="/static/js/translations.js"></script>
+  <script src="/static/js/pdf_export.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
